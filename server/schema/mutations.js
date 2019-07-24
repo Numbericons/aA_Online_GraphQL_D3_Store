@@ -90,6 +90,15 @@ const mutation = new GraphQLObjectType({
             return AuthService.login(args);
         }
       },
+      verifyUser: {
+        type: UserType,
+        args: {
+            token: { type: GraphQLString }
+        },
+        resolve(_, args) {
+            return AuthService.verifyUser(args);
+        }
+      },
   }
 });
 

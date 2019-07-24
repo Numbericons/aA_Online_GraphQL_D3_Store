@@ -94,4 +94,25 @@ const logout = async data => {
 
 };
 
-module.exports = { register, login, logout };
+const verifyUser = async data => {
+  try {
+    // we take in the token from our mutation
+    const { token } = data;
+    // we decode the token using our secret password to get the
+    // user's id
+    const decoded = jwt.verify(token, keys.secretOrKey);
+    const { id } = decoded;
+
+    // then we try to use the User with the id we just decoded
+    // making sure we await the response
+    const loggedIn = await User.findById(id).then(user => {
+      return user ? true : false;
+    });
+
+    return { loggedIn };
+  } catch (err) {
+    return { loggedIn: false };
+  }
+};
+
+module.exports = { register, login, logout, verifyUser };
