@@ -31,6 +31,13 @@ const Nav = props => {
                                     }}>
                                         + Product
                                     </button>
+                                    <button 
+                                        onClick={ e => {
+                                        e.preventDefault();
+                                        props.history.push("/")
+                                    }}>
+                                        All Products
+                                    </button>
                                 </nav>
                             );
                         } else {

@@ -2,6 +2,7 @@ import React from "react";
 import { Query } from "react-apollo";
 
 import queries from '../../graphql/queries';
+import AddToCart from "./AddToCart";
 const {FETCH_PRODUCT} = queries;
 
 const ProductDetail = props => {
@@ -18,6 +19,7 @@ const ProductDetail = props => {
                         <p>description: {data.product.description}</p>
                         <p>weight: {data.product.weight}</p>
                         <p>cost: {data.product.cost}</p>
+                        <AddToCart productId={data.product._id} cost={data.product.cost} />
                     </div>
                 );
             }}

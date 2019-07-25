@@ -44,7 +44,18 @@ const client = new ApolloClient({
         bout why this is necessary here(https://github.com/apollographql/apollo-client/pull/4499)."
         
     */
-    resolvers: {},
+    resolvers: {
+        addToCart: (parent, {product}, {cache} ) => {  //assuming these local resolvers available on the client
+            let products = cache.data;
+            products.push(product);
+            cache.writeData({
+                data:  {
+                    products
+                }
+            })
+            return products; //null
+        }
+    },
     onError: ({ networkError, graphQLErrors }) => {
         console.log("graphQLErrors", graphQLErrors);
         console.log("networkError", networkError);
@@ -72,10 +83,19 @@ if (token) {
         .then(({ data }) => {
             cache.writeData({
                 data: {
-                    isLoggedIn: data.verifyUser.loggedIn
+                    isLoggedIn: data.verifyUser.loggedIn,
+                    cart: []
                 }
             });
         });
+} else {
+    // otherwise we can just set isLoggedIn to false
+    cache.writeData({
+        data: {
+            isLoggedIn: false,
+            cart: []
+        }
+    });
 }
 
 const Root = () => {

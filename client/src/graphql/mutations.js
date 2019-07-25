@@ -32,6 +32,12 @@ export default {
           weight
       }
     }
-  `
+  `,
+  ADD_TO_CART: gql`
+  
+  `,
+  REMOVE_FROM_CART: gql`
+  
+  `,
 };
 

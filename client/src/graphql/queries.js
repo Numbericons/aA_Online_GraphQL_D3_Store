@@ -26,6 +26,11 @@ export default {
             }
         }
     `,
+    FETCH_CART_ITEMS: gql`
+        query FetchCartItems {
+            cart @client
+        }
+    `,
 };
 
 
