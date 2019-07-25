@@ -7,6 +7,7 @@ import Login from "./session/login";
 import Register from "./session/register"
 import Nav from "./Nav";
 import ProductDetail from "./products/ProductDetail";
+import CreateProduct from './products/CreateProduct';
 
 const App = (props) => {
   return (
@@ -15,6 +16,7 @@ const App = (props) => {
       <h1>Online Store</h1>
       <Switch>
         <Route exact path="/product/:productId" component={ProductDetail} />
+        <AuthRoute exact path="/new-product" component={CreateProduct} />
         <AuthRoute exact path="/login" component={Login} routeType="auth" />
         <AuthRoute exact path="/register" component={Register} routeType="auth" />
         <Route path="/" component={ProductIndex} />
