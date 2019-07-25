@@ -12,6 +12,9 @@ import { ApolloProvider } from "react-apollo";
 import { onError } from "apollo-link-error";
 import { ApolloLink } from "apollo-link";
 
+import mutations from "./graphql/mutations"
+const {VERIFY_USER} = mutations;
+
 const cache = new InMemoryCache({
     dataIdFromObject: object => object._id || null
 });
@@ -28,11 +31,48 @@ const errorLink = onError(({ graphQLErrors }) => {
 const client = new ApolloClient({
     link: httpLink,
     cache,
+    /*
+        Added the default resolvers configuration to resolve an Apollo warning regarding the use of @client to query our user auth:
+
+        "If you want to use Apollo Client's @client support to query the cache without using local resolvers, you must pass an empty 
+        object into the ApolloClient constructor resolvers option. Without this Apollo Client will not enable its integrated @client 
+        support, which means your @client based queries will be passed to the Apollo Client link chain. You can find more details a
+        bout why this is necessary here(https://github.com/apollographql/apollo-client/pull/4499)."
+        
+    */
+    resolvers: {},
     onError: ({ networkError, graphQLErrors }) => {
         console.log("graphQLErrors", graphQLErrors);
         console.log("networkError", networkError);
     }
 });
+
+// if we have a token we want to verify the user is actually logged in
+const token = localStorage.getItem("auth-token");
+
+// to avoid components async problems where
+// a component would try to read the cache's value of isLoggedIn
+// before our mutation goes through we can set it up here
+cache.writeData({
+    data: {
+        isLoggedIn: Boolean(token)
+    }
+});
+
+// then if we do have a token we'll go through with our mutation
+if (token) {
+    client
+        // use the VERIFY_USER mutation directly use the returned data to know if the returned
+        // user is loggedIn
+        .mutate({ mutation: VERIFY_USER, variables: { token } })
+        .then(({ data }) => {
+            cache.writeData({
+                data: {
+                    isLoggedIn: data.verifyUser.loggedIn
+                }
+            });
+        });
+}
 
 const Root = () => {
     return (
