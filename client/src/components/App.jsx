@@ -6,6 +6,7 @@ import ProductIndex from "./products/ProductIndex"
 import Login from "./session/login";
 import Register from "./session/register"
 import Nav from "./Nav";
+import ProductDetail from "./products/ProductDetail";
 
 const App = (props) => {
   return (
@@ -13,9 +14,10 @@ const App = (props) => {
       <Route path="/" component={Nav} />
       <h1>Online Store</h1>
       <Switch>
+        <Route exact path="/product/:productId" component={ProductDetail} />
         <AuthRoute exact path="/login" component={Login} routeType="auth" />
         <AuthRoute exact path="/register" component={Register} routeType="auth" />
-        <Route exact path="/" component={ProductIndex} />
+        <Route path="/" component={ProductIndex} />
       </Switch>
     </div>
   );
